@@ -99,7 +99,7 @@ export default {
             align-self: center;
         }
         .header__toggle {
-            margin-left: 16px;
+            margin: 0 0 0 16px;
         }
     }
     .containerOptional__row {

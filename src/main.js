@@ -5,7 +5,8 @@ import store from './store'
 // Kendo UI
 import '@progress/kendo-ui'
 import '@progress/kendo-theme-default/dist/all.css'
-import { Grid, GridInstaller } from '@progress/kendo-grid-vue-wrapper'
+import { Grid } from '@progress/kendo-vue-grid'
+import { GridInstaller } from '@progress/kendo-grid-vue-wrapper'
 import { DropdownsInstaller } from '@progress/kendo-dropdowns-vue-wrapper'
 import { DataSourceInstaller } from '@progress/kendo-datasource-vue-wrapper'
 Vue.use(GridInstaller)

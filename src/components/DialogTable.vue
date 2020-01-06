@@ -1,22 +1,7 @@
 <template>
     <div class="dialogTable">
         <p>{{name}}</p>
-        <!-- {{table}} -->
-        <div class="dialogTable__table">
-            <table>
-                <tbody>
-                    <tr v-for="(row,index) in table" :key="index">
-                        <!-- <input type="checkbox" /> -->
-                        <td>{{row.symbol}}</td>
-                        <td>{{row.name}}</td>
-                        <td>{{row.price}}</td>
-                        <td>
-                            <button class="btn btn-primary" @click="$emit('input', row)">選取</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        <slot></slot>
     </div>
 </template>
 <script>
@@ -29,7 +14,24 @@ export default {
         table: {
             type: Array,
             default: () => {
-                return []
+                return [
+                    {
+                        symbol: 'AAPL',
+                        price: '283.98'
+                    },
+                    {
+                        symbol: 'AMZN',
+                        price: '1792.91'
+                    },
+                    {
+                        symbol: 'FB',
+                        price: '206.08'
+                    },
+                    {
+                        symbol: 'GOOG',
+                        price: '1348.54'
+                    },
+                ]
             }
         }
     },

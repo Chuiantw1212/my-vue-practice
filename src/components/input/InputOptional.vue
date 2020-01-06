@@ -7,7 +7,6 @@
         <input
             class="inputGroup__input"
             :value="value"
-            @keydown="handleArrowUp($event)"
             @input="$emit('input', $event.target.value)"
             :disabled="!localEnabled"
         />

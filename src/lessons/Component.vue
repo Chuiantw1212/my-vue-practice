@@ -2,14 +2,22 @@
     <Container>
         <h1>元件使用</h1>
         <h2>Data</h2>
+        <p>這裡展示同樣頁面中的一大包資料</p>
         <p>{{localData}}</p>
         <h2>Input使用</h2>
+        <p>一個是普通的Input，另一個可選輸入則是會清空資料</p>
         <Row>
             <InputText v-model="localData.ClientID" :name="'ClientID'"></InputText>
             <InputOptional v-model="localData.Optional" :name="'Optional'"></InputOptional>
         </Row>
+        <h2>下拉選單</h2>
+        <Row>
+            <Dropdown v-model="localData.Dropdown" :options="dropdownOptions" :name="'下拉選單'"></Dropdown>
+        </Row>
         <h2>nav進行子內容切換</h2>
         <p>包含示範A子內容與B子內容的連動，A下拉除了A以外的值，B子內容都會鎖死</p>
+        <p>currentContainer: {{currentContainer}}</p>
+        <p>localData.Dropdown: {{localData.Dropdown}}</p>
         <Row>
             <Nav v-model="currentContainer" :buttons="['A', 'B']"></Nav>
         </Row>
@@ -27,11 +35,13 @@
                 ></InputText>
             </Row>
         </template>
-        <h2>下拉選單</h2>
-        <Row>
-            <Dropdown v-model="localData.Dropdown" :options="dropdownOptions" :name="'下拉選單'"></Dropdown>
-        </Row>
         <h2>可選的局部欄位</h2>
+        <p>localData.OptionalA:{{localData.OptionalA}}</p>
+        <p>localData.OptionalB:{{localData.OptionalB}}</p>
+        <p>localData.OptionalC:{{localData.OptionalC}}</p>
+        <p>localData.OptionalD:{{localData.OptionalD}}</p>
+        <p>localData.OptionalE:{{localData.OptionalE}}</p>
+        <p>localData.OptionalF:{{localData.OptionalF}}</p>
         <Row>
             <ContainerOptional
                 :isOptional="true"
@@ -83,20 +93,15 @@
                 </TableAddable>
             </ContainerOptional>
         </Row>
-        <RowControl>
-            <template slot="right">
-                <ButtonWFP @click="handleSave()">儲存</ButtonWFP>
-            </template>
-        </RowControl>
         <h2>Searcher</h2>
         <Row>
-            <InputSearcher v-model="searcherRow.ProductName" @click="getTable()">
+            <InputSearcher v-model="searcherRow.symbol" @click="getTable()">
                 <DialogTable :name="'Searcher：基金代碼'">
                     <Grid
                         :style="{height: '280px'}"
                         :data-items="items"
-                        :columns="columns"
                         @rowclick="onRowClick"
+                        :columns="columns"
                     ></Grid>
                 </DialogTable>
             </InputSearcher>
@@ -104,6 +109,7 @@
     </Container>
 </template>
 <script>
+import { mapActions } from 'vuex';
 export default {
     data: () => ({
         clientId: '',
@@ -152,40 +158,42 @@ export default {
         currentIndex: 0,
         // Searcher
         searcherRow: {
-            UserCName: ''
+            symbol: ''
         },
-        searcherTable: [],
         items: [],
         columns: [
-            { field: 'ProductID' },
-            { field: 'ProductName', title: 'Product Name' },
-            { field: 'UnitPrice', title: 'Unit Price' }
+            { field: 'symbol' },
+            { field: 'score' },
+            { field: 'rating' },
+            { field: 'recommendation', }
         ]
         // Others
     }),
-    mounted() {
-        // 生成假資料
-        this.items = this.createRandomData(50);
-    },
     methods: {
         onRowClick(event) {
             this.searcherRow = event.dataItem;
         },
         async getTable() {
+            const promise1 = this.getRating('AAPL')
+            const promise2 = this.getRating('MSFT')
+            const promise3 = this.getRating('FB')
+            const promise4 = this.getRating('ZNGA')
+            const promise5 = this.getRating('NVDA')
+            const promise6 = this.getRating('WBA')
+            const promise7 = this.getRating('AMZN')
+            const promise8 = this.getRating('PIH')
+            const promises = [promise1, promise2, promise3, promise4, promise5, promise6, promise7, promise8]
+            const stocks = await Promise.all(promises)
+            const stockTable = stocks.map((stock) => {
+                const { symbol, rating } = stock
+                return {
+                    symbol,
+                    ...rating
+                }
+            })
+            this.items = stockTable
         },
-        async handleSave() {
-
-        },
-        createRandomData(count) {
-            const productNames = ['Chai', 'Chang', 'Syrup', 'Apple', 'Orange', 'Banana', 'Lemon', 'Pineapple', 'Tea', 'Milk'];
-            const unitPrices = [12.5, 10.1, 5.3, 7, 22.53, 16.22, 20, 50, 100, 120]
-
-            return Array(count).fill({}).map((_, idx) => ({
-                ProductID: idx + 1,
-                ProductName: productNames[Math.floor(Math.random() * productNames.length)],
-                UnitPrice: unitPrices[Math.floor(Math.random() * unitPrices.length)]
-            }));
-        },
+        ...mapActions(["getRating"])
     }
 }
 </script>
