@@ -33,15 +33,25 @@ export default {
         const promise6 = this.getRating('WBA')
         const promise7 = this.getRating('AMZN')
         const promise8 = this.getRating('PIH')
-        const allPromises = [promise1, promise2, promise3, promise4, promise5, promise6, promise7, promise8]
-        const stocks = await Promise.all(allPromises)
+        const promises = [promise1, promise2, promise3, promise4, promise5, promise6, promise7, promise8]
+        const stocks = await Promise.all(promises)
+        // 抓回資料
+        console.log({
+            stocks
+        })
+
+        // 用Set整理不重複的key
         const ratingSet = new Set()
         stocks.forEach(stock => {
-            const { rating } = stock
+            const rating = stock.rating
             ratingSet.add(rating.rating)
         })
-        const groupByRating = {}
+
+        // 轉成Array
         const ratings = Array.from(ratingSet)
+
+        // 用Array的各種高階函式執行group by
+        const groupByRating = {}
         ratings.forEach(rating => {
             const matchedStocks = stocks.filter(stock => {
                 return stock.rating.rating === rating
@@ -58,7 +68,7 @@ export default {
         const rowLengths = stocksByRating.map(stocks => {
             return stocks.length
         })
-        const maxLength = rowLengths.reduce(function(a, b) {
+        const maxLength = rowLengths.reduce((a, b) => {
             return Math.max(a, b);
         });
         this.rowLength = maxLength

@@ -91,6 +91,12 @@ export default {
                 'C': 'C',
                 'D': 'D',
             },
+            {
+                'W': 'W',
+                'X': 'X',
+                'Y': 'Y',
+                'Z': 'Z',
+            },
         ],
     }),
     methods: {
