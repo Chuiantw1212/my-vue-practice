@@ -1,0 +1,50 @@
+.row__ediatble {
+    background-color: #f6f6f6;
+    .editable__content {
+        padding: 12px 24px;
+        > :not(:first-child) {
+            margin-top: 8px;
+        }
+    }
+    .editable__cell {
+        min-height: 32px;
+        line-height: 32px;
+        padding: 0;
+        border-bottom: 1px solid #d0d0d0;
+        .cell__content {
+            padding: 0 8px;
+            display: block;
+        }
+    }
+    .editable__cell--closed {
+        cursor: pointer;
+    }
+    .editable__buttonGroup {
+        position: relative;
+        height: 32px;
+        width: 100%;
+        cursor: pointer;
+        .buttonGroup__button {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 40px;
+            height: 32px;
+            border: solid 1px #c8c8c8;
+            background-color: #c6d1ff;
+            line-height: 32px;
+            transform: translateX(-100%);
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+        }
+        .buttonGroup__row {
+            height: 32px;
+            background-color: #2f3bf5;
+            cursor: pointer;
+        }
+    }
+}
+.row__ediatble--new {
+    background-color: white;
+}

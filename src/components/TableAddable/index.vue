@@ -1,21 +1,33 @@
 <template>
     <div class="tableAddable">
-        <input v-model="currentIndex" />
         <table class="tableAddable__table">
             <thead>
                 <tr class="table__row">
-                    <th v-for="(cell, index) in headers" :key="index">{{cell.text}}</th>
+                    <th v-for="(cell, index) in headers" :key="index">{{cell.text }}</th>
                 </tr>
             </thead>
             <tbody>
-                <tr class="table__row">
-                    <td>幣別代號名稱</td>
-                    <td>單位面額</td>
-                    <td>NAV小數位數</td>
-                </tr>
-                <tr v-for="(row,index) in value" :key="index">
-                    <td :colspan="headers.length">
-                        <slot v-bind:row="row">{{row}}</slot>
+                <!-- 打開可編輯時用可捨棄的副本編輯 -->
+                <template v-for="(rawRow, index) in value">
+                    <RowEditable
+                        v-model="value[index]"
+                        :headers="headers"
+                        :key="index"
+                        @remove="remove(index)"
+                    >
+                        <template v-slot="{ row, confirm, cancel, remove}">
+                            <slot :row="row" :confirm="confirm" :cancel="cancel" :remove="remove"></slot>
+                        </template>
+                    </RowEditable>
+                </template>
+                <tr class="row__ediatble row__ediatble--new">
+                    <td class="editable__cell" :colspan="headers.length">
+                        <label class="cell__content editable__buttonGroup">
+                            點擊新增一筆資料
+                            <button class="buttonGroup__button" @click="addRow()">
+                                <img src="./add.svg" />
+                            </button>
+                        </label>
                     </td>
                 </tr>
             </tbody>
@@ -23,19 +35,15 @@
     </div>
 </template>
 <script>
-// import RowEditable from './RowEditable.vue'
+import RowEditable from './RowEditable.vue'
 export default {
     data: () => ({
-        currentRowId: '',
-        currentIndex: 0
+        currentRowId: ''
     }),
+    components: {
+        RowEditable
+    },
     props: {
-        value: {
-            type: Array,
-            default: () => {
-                return Array
-            }
-        },
         headers: {
             type: Array,
             default: () => {
@@ -51,6 +59,33 @@ export default {
                     }
                 ]
             }
+        },
+        value: {
+            type: Array,
+            default: () => {
+                return []
+            }
+        },
+        fields: {
+            type: Array,
+            default: () => {
+                return []
+            }
+        }
+    },
+    methods: {
+        remove(index) {
+            this.value.splice(index, 1)
+        },
+        addRow() {
+            console.log('TEST')
+            const newRow = {}
+            this.fields.forEach(field => {
+                newRow[field] = ""
+            })
+            const valueCopy = JSON.parse(JSON.stringify(this.value))
+            valueCopy.push(newRow)
+            this.$emit('input', valueCopy)
         }
     }
 }
@@ -62,9 +97,12 @@ export default {
         border: solid 1px #c8c8c8;
         background-color: #c6d1ff;
         border-spacing: 0;
+        thead {
+        }
+        th {
+        }
         td {
             padding: 0;
-            border: solid 1px #c8c8c8;
             border-bottom: 0;
             &:not(:last-child) {
                 border-right: 0;
@@ -72,4 +110,6 @@ export default {
         }
     }
 }
+</style>
+<style lang="scss" scoped src="./editableRow.scss">
 </style>

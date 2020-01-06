@@ -47,6 +47,11 @@ const routes = [
             path: 'group-by',
             name: 'Group By',
             component: () => import('@/lessons/GroupBy.vue')
+          },
+          {
+            path: 'component',
+            name: '自製元件',
+            component: () => import('@/lessons/Component.vue')
           }
         ]
       },

@@ -1,9 +1,10 @@
 <template>
     <div class="rowControl">
-        <div class="rowControl__left">
+        <div>
             <slot name="left"></slot>
         </div>
         <div class="rowControl__right">
+            <slot name="default"></slot>
             <slot name="right"></slot>
         </div>
     </div>
@@ -14,13 +15,6 @@
     display: flex;
     justify-content: space-between;
     margin-top: 40px;
-    .rowControl__left {
-        display: flex;
-        justify-content: flex-end;
-        > :not(:first-child) {
-            margin-left: 24px;
-        }
-    }
     .rowControl__right {
         display: flex;
         justify-content: flex-end;

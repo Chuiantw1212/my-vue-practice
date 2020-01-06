@@ -1,7 +1,11 @@
 <template>
     <div class="containerOptional">
+        <div
+            class="containerOptional__vl"
+            :style="{'background-color': localEnabled?color:'#414042'}"
+        ></div>
         <div class="containerOptional__header">
-            <p class="header__name">{{name}}</p>
+            <span class="header__name" :style="{'color':localEnabled?color:'#414042'}">{{name}}</span>
             <ToggleSwitch
                 v-if="isOptional"
                 class="header__toggle"
@@ -18,7 +22,7 @@
 <script>
 export default {
     data: () => ({
-        localEnabled: false
+        localEnabled: true
     }),
     props: {
         isOptional: {
@@ -37,14 +41,18 @@ export default {
         },
         enabled: {
             type: Boolean,
-            default: false
+            default: true
         },
         fields: {
             type: Array,
             default: () => {
                 return []
             }
-        }
+        },
+        color: {
+            type: String,
+            default: '#00b85a'
+        },
     },
     mounted() {
         this.fields.forEach(key => {
@@ -61,11 +69,9 @@ export default {
         },
         localEnabled(newValue) {
             if (newValue === false) {
-                const valueCopy = JSON.parse(JSON.stringify(this.value))
                 this.fields.forEach(key => {
-                    valueCopy[key] = ""
+                    this.value[key] = ""
                 })
-                this.$emit('input', valueCopy)
             }
         }
     }
@@ -76,18 +82,19 @@ export default {
     background-color: #f0eff1;
     padding: 8px 13px;
     position: relative;
-    &::before {
-        content: "";
+    .containerOptional__vl {
         position: absolute;
         left: 0;
         top: 50%;
         transform: translateY(-50%);
-        height: 84px;
+        height: calc(100% - 16px);
         width: 5px;
-        background-color: #1dd476;
+        transition: all 0.3s;
     }
     .containerOptional__header {
+        margin-bottom: 12px;
         display: flex;
+        transition: all 0.3s;
         > * {
             align-self: center;
         }

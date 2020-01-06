@@ -1,50 +1,85 @@
 <template>
-    <div class="row__ediatble">
-        <div class="row__addGroup">
-            新增一筆資料
-            <button class="row__add">
-                <img class="add__icon" src="./add.svg" />
-            </button>
-        </div>
-        <div class="editable__content">
-            <slot></slot>
-        </div>
-    </div>
+    <tr class="row__ediatble">
+        <template v-if="isOpen">
+            <td class="editable__cell" :colspan="headers.length">
+                <div class="editable__buttonGroup">
+                    <div class="buttonGroup__row" @click.stop="isOpen=!isOpen"></div>
+                    <button class="buttonGroup__button" @click.stop="isOpen=!isOpen">
+                        <img v-if="isOpen" src="./expand.svg" />
+                        <img v-else src="./add.svg" />
+                    </button>
+                </div>
+                <div class="editable__content">
+                    <slot :row="row" :confirm="confirm" :cancel="cancel" :remove="remove"></slot>
+                </div>
+            </td>
+        </template>
+        <template v-else>
+            <td
+                class="editable__cell editable__cell--closed"
+                v-for="(cell,key,index) in row"
+                :key="key"
+                @click.stop="isOpen=!isOpen"
+            >
+                <template v-if="index==0">
+                    <div class="cell__content editable__buttonGroup">
+                        {{cell}}
+                    </div>
+                </template>
+                <template v-else>
+                    <div class="cell__content">{{cell}}</div>
+                </template>
+            </td>
+        </template>
+    </tr>
 </template>
 <script>
 export default {
     data: () => ({
-        isOpen: false
+        isOpen: false,
+        row: {}
     }),
     props: {
-
-    }
-}
-</script>
-<style lang="scss" scoped>
-.row__ediatble {
-    background-color: #f6f6f6;
-    .editable__content {
-        padding: 12px 24px;
-        > :not(:first-child) {
-            margin-top: 8px;
+        value: {
+            type: Object,
+            default: () => {
+                return {}
+            }
+        },
+        headers: {
+            type: Array,
+            default: () => {
+                return []
+            }
+        },
+        isLast: {
+            type: Boolean,
+            default: false
+        }
+    },
+    mounted() {
+        this.row = JSON.parse(JSON.stringify(this.value))
+    },
+    watch: {
+        value() {
+            this.row = JSON.parse(JSON.stringify(this.value))
+        }
+    },
+    methods: {
+        confirm() {
+            this.$emit('input', this.row)
+            this.isOpen = false
+        },
+        cancel() {
+            this.row = JSON.parse(JSON.stringify(this.value))
+            this.isOpen = false
+        },
+        remove() {
+            this.$emit("remove")
+            this.isOpen = false
         }
     }
 }
-.row__addGroup {
-    background-color: white;
-    min-height: 32px;
-    position: relative;
-    .row__add {
-        position: absolute;
-        left: 0;
-        width: 40px;
-        height: 32px;
-        border: solid 1px #c8c8c8;
-        background-color: #c6d1ff;
-        line-height: 32px;
-        transform: translateX(-100%);
-        cursor: pointer;
-    }
-}
+</script>
+<style lang="scss" scoped src="./editableRow.scss">
 </style>
